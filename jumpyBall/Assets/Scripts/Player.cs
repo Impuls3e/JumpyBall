@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public PlayerState playerState = PlayerState.Prepare;
 
+    public AudioClip bounceSFX, deadSFX, winSFX, destroySFX, invincibleSFX;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -93,12 +95,14 @@ public class Player : MonoBehaviour
         if(!invincible)
         {
             ScoreManager.instance.AddScore(1);
-           
+            SFXManager.instance.PlaySFX(destroySFX, 0.6f);
+
 
         }
         else
         {
             ScoreManager.instance.AddScore(2);
+            SFXManager.instance.PlaySFX(invincibleSFX, 0.6f);
 
         }
 
@@ -125,6 +129,7 @@ public class Player : MonoBehaviour
         if (!smash)
         {
             rb.velocity = new Vector3(0, 50 * Time.deltaTime * 5, 0);
+            SFXManager.instance.PlaySFX(bounceSFX, 0.6f);
         }
         else
         {
@@ -146,6 +151,7 @@ public class Player : MonoBehaviour
                 {
                     Debug.Log("Game Over");
                     ScoreManager.instance.ResetScore();
+                    SFXManager.instance.PlaySFX(deadSFX, 0.6f);
                 }
             }
 
@@ -154,6 +160,7 @@ public class Player : MonoBehaviour
         if(target.gameObject.tag=="Finish" && playerState== PlayerState.Playing)
         {
             playerState = PlayerState.Finish;
+            SFXManager.instance.PlaySFX(winSFX, 0.6f);
         }
 
     }
