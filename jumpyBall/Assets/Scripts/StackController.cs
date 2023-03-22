@@ -10,9 +10,10 @@ public class StackController : MonoBehaviour
     public void ShatterAllParts ()
     {
 
-        if(transform.parent=null)
+        if(transform.parent!=null)
         {
             transform.parent = null;
+            FindAnyObjectByType<Player>().IncreaseBrokenStacks();
             
         }
 

@@ -88,7 +88,21 @@ public class Player : MonoBehaviour
 
 
     }
+    public void IncreaseBrokenStacks() {
 
+        if(!invincible)
+        {
+            ScoreManager.instance.AddScore(1);
+           
+
+        }
+        else
+        {
+            ScoreManager.instance.AddScore(2);
+
+        }
+
+    }
     private void FixedUpdate()
     {if(playerState==PlayerState.Playing)
         {
@@ -131,6 +145,7 @@ public class Player : MonoBehaviour
                 if (target.gameObject.tag == "plane")
                 {
                     Debug.Log("Game Over");
+                    ScoreManager.instance.ResetScore();
                 }
             }
 

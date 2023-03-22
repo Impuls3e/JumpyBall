@@ -347,6 +347,7 @@
 "Assets/Scripts/CamFollow.cs"
 "Assets/Scripts/Player.cs"
 "Assets/Scripts/Rotate.cs"
+"Assets/Scripts/ScoreManager.cs"
 "Assets/Scripts/Spawner.cs"
 "Assets/Scripts/StackController.cs"
 "Assets/Scripts/StackPartController.cs"
