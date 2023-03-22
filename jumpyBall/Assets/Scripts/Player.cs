@@ -8,6 +8,15 @@ public class Player : MonoBehaviour
     private float currentTime;
     private bool smash, invincible;
 
+    public enum PlayerState {
+        Prepare,
+        Playing,
+        Died,
+        Finish
+    }
+    [HideInInspector]
+    public PlayerState playerState = PlayerState.Prepare;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -17,6 +26,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Playing
+        if (playerState == PlayerState.Playing)
+
+        { 
         if (Input.GetMouseButtonDown(0))
         {
 
@@ -52,17 +65,42 @@ public class Player : MonoBehaviour
             currentTime = 0;
             invincible = false;
         }
-        print(currentTime);
+            #endregion
+
+
+        }
+        #region Prepare
+        if (playerState == PlayerState.Prepare) {
+
+            if (Input.GetMouseButtonDown(0))
+                playerState = PlayerState.Playing;
+        }
+        #endregion
+
+        #region Finish
+        if (playerState == PlayerState.Finish)
+        {
+
+            if (Input.GetMouseButtonDown(0))
+                FindAnyObjectByType<Spawner>().NextLevel();
+        }
+        #endregion
+
+
     }
 
     private void FixedUpdate()
-    {
-        if (Input.GetMouseButton(0))
+    {if(playerState==PlayerState.Playing)
         {
+            if (Input.GetMouseButton(0))
+            {
 
-            smash = true;
-            rb.velocity = new Vector3(0, -100 * Time.fixedDeltaTime * 7, 0);
+                smash = true;
+                rb.velocity = new Vector3(0, -100 * Time.fixedDeltaTime * 7, 0);
+            }
+
         }
+       
         if (rb.velocity.y > 5)
         {
             rb.velocity = new Vector3(rb.velocity.x, 5, rb.velocity.z);
@@ -98,10 +136,15 @@ public class Player : MonoBehaviour
 
         }
 
+        if(target.gameObject.tag=="Finish" && playerState== PlayerState.Playing)
+        {
+            playerState = PlayerState.Finish;
+        }
+
     }
     private void OnCollisionStay(Collision target)
     {
-        if (!smash)
+        if (!smash || target.gameObject.tag =="Finish")
         {
             rb.velocity = new Vector3(0, 50 * Time.deltaTime * 5, 0);
         }
