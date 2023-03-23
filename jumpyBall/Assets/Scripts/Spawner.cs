@@ -17,7 +17,7 @@ public class Spawner : MonoBehaviour
 
 
 
-    void Start()
+    void Awake()
     {
         level = PlayerPrefs.GetInt("level", 1);
 

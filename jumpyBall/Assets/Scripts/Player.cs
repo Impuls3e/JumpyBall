@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     private Rigidbody rb;
     private float currentTime;
     private bool smash, invincible;
+
+    private int brokenStacks, totalStacks;
 
     public enum PlayerState {
         Prepare,
@@ -19,12 +22,21 @@ public class Player : MonoBehaviour
 
     public AudioClip bounceSFX, deadSFX, winSFX, destroySFX, invincibleSFX;
 
+    public GameObject invincibleG;
+    public Image invincibleF;
+    public GameObject fireFx;
+
     // Start is called before the first frame update
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-    }
+        brokenStacks = 0;
 
+    }
+     void Start()
+    {
+        totalStacks = FindObjectsOfType<StackController>().Length;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -47,26 +59,37 @@ public class Player : MonoBehaviour
         if (invincible)
         {
             currentTime -= Time.deltaTime * .35f;
+                if (!fireFx.activeInHierarchy)
+                    fireFx.SetActive(true);
         }
         else
         {
+                if (fireFx.activeInHierarchy)
+                    fireFx.SetActive(false);
             if (smash)
                 currentTime += Time.deltaTime * .8f;
             else
                 currentTime -= Time.deltaTime * .5f;
         }
 
+            if (currentTime >= 0.15f || invincibleF.color == Color.red)
+                invincibleG.SetActive(true);
+            else
+                invincibleG.SetActive(false);
         if(currentTime >= 1)
         {
             currentTime = 1;
             invincible = true;
-            print("Done");
+                invincibleF.color = Color.red;
         }
         else if(currentTime <= 0)
         {
             currentTime = 0;
             invincible = false;
+                invincibleF.color = Color.white;
         }
+            if (invincibleG.activeInHierarchy)
+                invincibleF.fillAmount = currentTime / 1;
             #endregion
 
 
@@ -91,7 +114,7 @@ public class Player : MonoBehaviour
 
     }
     public void IncreaseBrokenStacks() {
-
+        brokenStacks++;
         if(!invincible)
         {
             ScoreManager.instance.AddScore(1);
@@ -156,6 +179,8 @@ public class Player : MonoBehaviour
             }
 
         }
+
+        FindObjectOfType<GameUi>().LevelSliderF(brokenStacks / (float)totalStacks);
 
         if(target.gameObject.tag=="Finish" && playerState== PlayerState.Playing)
         {
